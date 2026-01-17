@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Shooter;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -36,8 +37,9 @@ public class IncrementShooterSpeed extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (newSpeed < .8) {
-      shooter.shooterSpeed(newSpeed);
+    if (shooter.currentSpeed+ newSpeed < 0.8 && shooter.currentSpeed+ newSpeed >0.0 ) {
+      shooter.shooterSpeed(shooter.currentSpeed + newSpeed);
+
     }
 
 

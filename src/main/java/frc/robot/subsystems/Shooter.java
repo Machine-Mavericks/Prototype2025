@@ -22,6 +22,7 @@ public void shooterSpeed(double speed){
 public void stop(){
   shooterMotor.set(0);
 }
+public double currentSpeed;
   /**
    * Return a one-time command that would run a short action for this subsystem.
    */
@@ -45,6 +46,7 @@ public void stop(){
   @Override
   public void periodic() {
     // Code here would run every robot cycle when this subsystem is alive.
+    currentSpeed = shooterMotor.get();
   }
 
   @Override
