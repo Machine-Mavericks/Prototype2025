@@ -12,6 +12,7 @@ import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveModule;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -60,6 +61,7 @@ private Shooter m_Shooter = new Shooter();
     new Trigger(m_exampleSubsystem::exampleCondition)
         .onTrue(new ExampleCommand(m_exampleSubsystem));
 
-        m_driverController.a().onTrue(new IncrementShooterSpeed(m_Shooter, 0.5));
+        //m_driverController.a().onTrue(new IncrementShooterSpeed(m_Shooter, 0.5));
+        m_driverController.a().onTrue(new InstantCommand(()-> new Shooter().shooterSpeed(18)));
   }
 }
