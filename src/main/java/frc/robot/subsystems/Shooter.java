@@ -6,37 +6,46 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.util.datalog.DataLog;
-import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+@Logged
 public class Shooter extends SubsystemBase {
-  
+
+  @Logged
   TalonFX shooterMotor  = new TalonFX(1);
   
   // AdvantageScope logging entries
-  private final DoubleLogEntry motorVelocityLog;
-  private final DoubleLogEntry motorCommandLog;
+  // private final DoubleLogEntry motorVelocityLog;
+  // private final DoubleLogEntry motorCommandLog;
   
+  @Logged
+  public double velocity;
+  @Logged
+  public double commanded;
+
   /** Basic subsystem template with a sample command and sensor check. */
   public Shooter() {
     // Initialize data logging for AdvantageScope
     DataLog log = DataLogManager.getLog();
-    motorVelocityLog = new DoubleLogEntry(log, "/Shooter/MotorVelocity");
-    motorCommandLog = new DoubleLogEntry(log, "/Shooter/MotorCommand");
+    // motorVelocityLog = new DoubleLogEntry(log, "/Shooter/MotorVelocity");
+    // motorCommandLog = new DoubleLogEntry(log, "/Shooter/MotorCommand");
   }
 
 public void shooterSpeed(double speed){
   shooterMotor.set(speed);
   // Log the commanded speed
-  motorCommandLog.append(speed);
+  // motorCommandLog.append(speed);
+  commanded = speed;
 }
 
 public void stop(){
   shooterMotor.set(0);
-  motorCommandLog.append(0.0);
+  // motorCommandLog.append(0.0);
+  commanded = 0;
 }
 public double currentSpeed;
   /**
@@ -63,11 +72,12 @@ public double currentSpeed;
   public void periodic() {
     // Code here would run every robot cycle when this subsystem is alive.
     currentSpeed = shooterMotor.get();
-    
+
     // Log actual motor velocity every cycle to monitor speed dips
     // Get velocity in rotations per second from the TalonFX
     double velocity = shooterMotor.getVelocity().getValueAsDouble();
-    motorVelocityLog.append(velocity);
+    // motorVelocityLog.append(velocity);
+    this.velocity = velocity;
   }
 
   @Override
