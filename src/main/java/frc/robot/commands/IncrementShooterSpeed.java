@@ -37,7 +37,7 @@ public class IncrementShooterSpeed extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (shooter.currentSpeed+ newSpeed < 0.8 && shooter.currentSpeed+ newSpeed >0.0 ) {
+    if (shooter.currentSpeed+ newSpeed < 0.8 && shooter.currentSpeed+ newSpeed > -0.8 ) {
       shooter.shooterSpeed(shooter.currentSpeed + newSpeed);
 
     }

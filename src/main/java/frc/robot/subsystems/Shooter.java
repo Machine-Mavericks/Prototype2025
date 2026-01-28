@@ -75,7 +75,7 @@ public double currentSpeed;
 
     // Log actual motor velocity every cycle to monitor speed dips
     // Get velocity in rotations per second from the TalonFX
-    double velocity = shooterMotor.getVelocity().getValueAsDouble();
+    double velocity = shooterMotor.getVelocity().getValueAsDouble() * 60;
     // motorVelocityLog.append(velocity);
     this.velocity = velocity;
   }
