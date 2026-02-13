@@ -25,6 +25,8 @@ public class Shooter extends SubsystemBase {
   @Logged
   public double velocity;
   @Logged
+  public double wheelRPM;
+  @Logged
   public double commanded;
 
   /** Basic subsystem template with a sample command and sensor check. */
@@ -75,13 +77,30 @@ public double currentSpeed;
 
     // Log actual motor velocity every cycle to monitor speed dips
     // Get velocity in rotations per second from the TalonFX
-    double velocity = shooterMotor.getVelocity().getValueAsDouble() * 60;
+    double velocity = shooterMotor.getVelocity().getValueAsDouble()*60;
+    double wheelRPM = velocity* 0.5769;
     // motorVelocityLog.append(velocity);
     this.velocity = velocity;
+    this.wheelRPM = wheelRPM;
   }
 
   @Override
   public void simulationPeriodic() {
     // Code here would run each cycle while simulating the robot.
+  }
+
+  @Logged(name = "Shooter Volts")
+  public double getVolts() {
+    return shooterMotor.getMotorVoltage().getValueAsDouble();
+  }
+
+  @Logged(name = "Bus Volts")
+  public double getBusVolts() {
+    return shooterMotor.getSupplyVoltage().getValueAsDouble();
+  }
+  
+  @Logged(name = "Shooter Amps")
+  public double getCurrent() {
+    return shooterMotor.getStatorCurrent().getValueAsDouble();
   }
 }
