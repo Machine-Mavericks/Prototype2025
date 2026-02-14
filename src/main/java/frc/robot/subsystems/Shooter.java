@@ -17,7 +17,8 @@ public class Shooter extends SubsystemBase {
 
   @Logged
   TalonFX shooterMotor  = new TalonFX(1);
-  
+
+
   // AdvantageScope logging entries
   // private final DoubleLogEntry motorVelocityLog;
   // private final DoubleLogEntry motorCommandLog;
@@ -28,6 +29,7 @@ public class Shooter extends SubsystemBase {
   public double wheelRPM;
   @Logged
   public double commanded;
+
 
   /** Basic subsystem template with a sample command and sensor check. */
   public Shooter() {
@@ -82,6 +84,7 @@ public double currentSpeed;
     // motorVelocityLog.append(velocity);
     this.velocity = velocity;
     this.wheelRPM = wheelRPM;
+
   }
 
   @Override
