@@ -42,6 +42,11 @@ public class Shooter extends SubsystemBase {
    */
   private static final double MECHANISM_RATIO = (12 / 24d) * (30 / 26d);
 
+  /**
+   * Feedforward value, in RPS per Volt
+   */
+  private static final double FEEDFORWARD = 4.93884;
+
   /** Basic subsystem template with a sample command and sensor check. */
   public Shooter() {
     // Initialize data logging for AdvantageScope
@@ -57,6 +62,11 @@ public class Shooter extends SubsystemBase {
       ).withMotorOutput(
         new MotorOutputConfigs()
         .withInverted(InvertedValue.Clockwise_Positive)
+      ).withSlot0(new Slot0Configs()
+        .withKP(0)
+        .withKI(0)
+        .withKD(0)
+        .withKV(FEEDFORWARD)
       );
 
     shooterMotor.getConfigurator().apply(config);
