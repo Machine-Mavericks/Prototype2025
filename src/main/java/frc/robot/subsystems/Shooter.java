@@ -4,7 +4,12 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.FeedbackConfigs;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.util.datalog.DataLog;
@@ -30,6 +35,12 @@ public class Shooter extends SubsystemBase {
   @Logged
   public double commanded;
 
+  /**
+   * Total ratio from motor to flywheel <br/>
+   * Represents how many wheel rotations occur for one motor rotation <br/>
+   * 12T pulley to 24T pulley, then 30T gear to 26T gear
+   */
+  private static final double MECHANISM_RATIO = (12 / 24d) * (30 / 26d);
 
   /** Basic subsystem template with a sample command and sensor check. */
   public Shooter() {
@@ -37,6 +48,18 @@ public class Shooter extends SubsystemBase {
     DataLog log = DataLogManager.getLog();
     // motorVelocityLog = new DoubleLogEntry(log, "/Shooter/MotorVelocity");
     // motorCommandLog = new DoubleLogEntry(log, "/Shooter/MotorCommand");
+
+    TalonFXConfiguration config = new TalonFXConfiguration()
+      .withFeedback(
+        new FeedbackConfigs()
+          // CTRE Needs reduction ration (N:1) instead of actual ratio
+          .withSensorToMechanismRatio(1 / MECHANISM_RATIO)
+      ).withMotorOutput(
+        new MotorOutputConfigs()
+        .withInverted(InvertedValue.Clockwise_Positive)
+      );
+
+    shooterMotor.getConfigurator().apply(config);
   }
 
 public void shooterSpeed(double speed){
@@ -79,8 +102,8 @@ public double currentSpeed;
 
     // Log actual motor velocity every cycle to monitor speed dips
     // Get velocity in rotations per second from the TalonFX
-    double velocity = shooterMotor.getVelocity().getValueAsDouble()*60;
-    double wheelRPM = velocity* 0.5769;
+    double velocity = shooterMotor.getVelocity().getValueAsDouble();
+    double wheelRPM = velocity*60;
     // motorVelocityLog.append(velocity);
     this.velocity = velocity;
     this.wheelRPM = wheelRPM;
