@@ -63,8 +63,10 @@ private Shooter m_Shooter = new Shooter();
     new Trigger(m_exampleSubsystem::exampleCondition)
         .onTrue(new ExampleCommand(m_exampleSubsystem));
 
-        m_driverController.a().onTrue(new IncrementShooterSpeed(m_Shooter, 0.05));
-        m_driverController.b().onTrue(new IncrementShooterSpeed(m_Shooter, - 0.05));
+        m_driverController.b().onTrue(new IncrementShooterSpeed(m_Shooter, 0.5));
+        m_driverController.a().onTrue(new IncrementShooterSpeed(m_Shooter, - 0.5));
+        m_driverController.y().onTrue(new IncrementShooterSpeed(m_Shooter, 15));
+        m_driverController.x().onTrue(new IncrementShooterSpeed(m_Shooter, - 15));
 
   }
 }

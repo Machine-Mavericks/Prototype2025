@@ -8,6 +8,7 @@ import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 
@@ -63,17 +64,22 @@ public class Shooter extends SubsystemBase {
         new MotorOutputConfigs()
         .withInverted(InvertedValue.Clockwise_Positive)
       ).withSlot0(new Slot0Configs()
-        .withKP(0)
+        .withKP(1.25)
         .withKI(0)
         .withKD(0)
-        .withKV(FEEDFORWARD)
+        .withKV(1 / FEEDFORWARD)
       );
 
     shooterMotor.getConfigurator().apply(config);
   }
 
 public void shooterSpeed(double speed){
-  shooterMotor.set(speed);
+  if (speed < 15) {
+    shooterMotor.set(0);
+  } else {
+    // shooterMotor.set(speed);
+    shooterMotor.setControl(new VelocityVoltage(speed));
+  }
   // Log the commanded speed
   // motorCommandLog.append(speed);
   commanded = speed;
