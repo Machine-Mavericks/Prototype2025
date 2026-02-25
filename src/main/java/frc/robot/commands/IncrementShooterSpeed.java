@@ -6,7 +6,8 @@ package frc.robot.commands;
 
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.ExampleSubsystem;
-import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.FrankenShooter;
+//import frc.robot.subsystems.Shooter;
 import edu.wpi.first.wpilibj2.command.Command;
 
 /**
@@ -14,7 +15,7 @@ import edu.wpi.first.wpilibj2.command.Command;
  */
 public class IncrementShooterSpeed extends Command {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final Shooter shooter;
+  private final FrankenShooter shooter;
  
   private double newSpeed;
   /**
@@ -23,7 +24,7 @@ public class IncrementShooterSpeed extends Command {
    * @param subsystem The subsystem used by this command.
    * Store the subsystem this command would work with.
    */
-  public IncrementShooterSpeed(Shooter subsystem, double newspeed) {
+  public IncrementShooterSpeed(FrankenShooter subsystem, double newspeed) {
     shooter = subsystem;
     newSpeed = newspeed;
     // Use addRequirements() here to declare subsystem dependencies.
@@ -40,7 +41,7 @@ public class IncrementShooterSpeed extends Command {
     double desired = shooter.velocity + newSpeed;
     double newVel = Math.min(Math.max(desired, -60), 60);
 
-    shooter.shooterSpeed(newVel);
+    shooter.shooterSpeed(newVel*60);
 
 
   }

@@ -9,7 +9,8 @@ import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.IncrementShooterSpeed;
 import frc.robot.subsystems.ExampleSubsystem;
-import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.FrankenShooter;
+//import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveModule;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -27,7 +28,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   private final SwerveModule m_swerveModule = new SwerveModule();
-private Shooter m_Shooter = new Shooter();
+  private FrankenShooter m_Shooter = new FrankenShooter();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
@@ -67,6 +68,8 @@ private Shooter m_Shooter = new Shooter();
         m_driverController.a().onTrue(new IncrementShooterSpeed(m_Shooter, - 0.5));
         m_driverController.y().onTrue(new IncrementShooterSpeed(m_Shooter, 15));
         m_driverController.x().onTrue(new IncrementShooterSpeed(m_Shooter, - 15));
+
+        
 
   }
 }
