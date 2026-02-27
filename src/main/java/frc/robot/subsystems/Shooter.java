@@ -91,25 +91,6 @@ public void stop(){
   commanded = 0;
 }
 public double currentSpeed;
-  /**
-   * Return a one-time command that would run a short action for this subsystem.
-   */
-  public Command exampleMethodCommand() {
-    // Inline construction of command goes here.
-    // Subsystem::RunOnce implicitly requires `this` subsystem.
-    return runOnce(
-        () -> {
-          /* one-time action goes here */
-        });
-  }
-
-  /**
-   * Return a fake sensor value for showing how trigger conditions can work.
-   */
-  public boolean exampleCondition() {
-    // Query some boolean state, such as a digital sensor.
-    return false;
-  }
 
   @Override
   public void periodic() {
