@@ -7,7 +7,11 @@ package frc.robot.commands;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Shooter;
+
+import com.ctre.phoenix6.swerve.utility.WheelForceCalculator.Feedforwards;
+
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 
 /**
  * Simple example command that shows the structure of a command class.
@@ -16,7 +20,9 @@ public class IncrementShooterSpeed extends Command {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Shooter shooter;
  
+ 
   private double newSpeed;
+
   /**
    * Creates a new ExampleCommand.
    *
@@ -26,9 +32,12 @@ public class IncrementShooterSpeed extends Command {
   public IncrementShooterSpeed(Shooter subsystem, double newspeed) {
     shooter = subsystem;
     newSpeed = newspeed;
+    System.out.println();
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
   }
+
+
 
   // Called when the command is initially scheduled.
   @Override
@@ -38,7 +47,8 @@ public class IncrementShooterSpeed extends Command {
   @Override
   public void execute() {
     double desired = shooter.velocity + newSpeed;
-    double newVel = Math.min(Math.max(desired, -60), 60);
+    //double newVel = Math.min(Math.max(desired, -60), 60);
+    double newVel = desired;
 
     shooter.shooterSpeed(newVel);
 

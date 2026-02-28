@@ -27,7 +27,9 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   private final SwerveModule m_swerveModule = new SwerveModule();
-private Shooter m_Shooter = new Shooter();
+  private Shooter m_Shooter = new Shooter();
+  
+
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
@@ -67,6 +69,6 @@ private Shooter m_Shooter = new Shooter();
         m_driverController.a().onTrue(new IncrementShooterSpeed(m_Shooter, - 0.5));
         m_driverController.y().onTrue(new IncrementShooterSpeed(m_Shooter, 15));
         m_driverController.x().onTrue(new IncrementShooterSpeed(m_Shooter, - 15));
-
+        m_driverController.leftBumper().onTrue(new InstantCommand(()-> m_Shooter.shooterSpeed()));
   }
 }

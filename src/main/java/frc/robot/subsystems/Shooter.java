@@ -4,6 +4,9 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Seconds;
+
+import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -11,12 +14,14 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
 
 @Logged
 public class Shooter extends SubsystemBase {
@@ -46,71 +51,85 @@ public class Shooter extends SubsystemBase {
   /**
    * Feedforward value, in RPS per Volt
    */
-  private static final double FEEDFORWARD = 4.93884;
-
-  /** Basic subsystem template with a sample command and sensor check. */
-  public Shooter() {
-    // Initialize data logging for AdvantageScope
-    DataLog log = DataLogManager.getLog();
-    // motorVelocityLog = new DoubleLogEntry(log, "/Shooter/MotorVelocity");
-    // motorCommandLog = new DoubleLogEntry(log, "/Shooter/MotorCommand");
-
-    TalonFXConfiguration config = new TalonFXConfiguration()
-      .withFeedback(
-        new FeedbackConfigs()
-          // CTRE Needs reduction ration (N:1) instead of actual ratio
-          .withSensorToMechanismRatio(1 / MECHANISM_RATIO)
-      ).withMotorOutput(
-        new MotorOutputConfigs()
-        .withInverted(InvertedValue.Clockwise_Positive)
-      ).withSlot0(new Slot0Configs()
-        .withKP(1.25)
-        .withKI(0)
-        .withKD(0)
-        .withKV(1 / FEEDFORWARD)
-      );
-
-    shooterMotor.getConfigurator().apply(config);
+  private static double FEEDFORWARD = 0.013 ;// is 0.013
+  public static double TargetSpeed;
+    /** Basic subsystem template with a sample command and sensor check. */
+    public Shooter() {
+      // Initialize data logging for AdvantageScope
+      DataLog log = DataLogManager.getLog();
+      // motorVelocityLog = new DoubleLogEntry(log, "/Shooter/MotorVelocity");
+      // motorCommandLog = new DoubleLogEntry(log, "/Shooter/MotorCommand");
+  
+      TalonFXConfiguration config = new TalonFXConfiguration()
+        .withFeedback(
+          new FeedbackConfigs()
+            // CTRE Needs reduction ration (N:1) instead of actual ratio
+            .withSensorToMechanismRatio(1 / MECHANISM_RATIO)
+        ).withMotorOutput(
+          new MotorOutputConfigs()
+          .withInverted(InvertedValue.Clockwise_Positive)
+          .withNeutralMode(NeutralModeValue.Coast)
+        ).withSlot0(new Slot0Configs()
+          .withKP(3.0) // was 1.25
+          .withKI(2.0)
+          .withKD(0)
+          .withKV(FEEDFORWARD)
+        ).withClosedLoopRamps(new ClosedLoopRampsConfigs()
+          .withVoltageClosedLoopRampPeriod(Seconds.of(1))
+        );
+  
+      shooterMotor.getConfigurator().apply(config);
+    }
+  
+  public void shooterSpeed(double speed){
+    if (speed < 15) { // RPS
+      shooterMotor.set(0);
+    } else {
+      // shooterMotor.set(speed);
+      shooterMotor.setControl(new VelocityVoltage(speed));
+    }
+    // Log the commanded speed
+    // motorCommandLog.append(speed);
+    commanded = speed;
   }
 
-public void shooterSpeed(double speed){
-  if (speed < 15) {
+  public void shooterSpeed(){
+    TargetSpeed = CalculateSpeed(3.0);
+    shooterMotor.setControl(new VelocityVoltage(TargetSpeed));
+  }
+  
+  public void stop(){
     shooterMotor.set(0);
-  } else {
-    // shooterMotor.set(speed);
-    shooterMotor.setControl(new VelocityVoltage(speed));
-  }
-  // Log the commanded speed
-  // motorCommandLog.append(speed);
-  commanded = speed;
-}
-
-public void stop(){
-  shooterMotor.set(0);
-  // motorCommandLog.append(0.0);
-  commanded = 0;
-}
-public double currentSpeed;
-
-  @Override
-  public void periodic() {
-    // Code here would run every robot cycle when this subsystem is alive.
-    currentSpeed = shooterMotor.get();
-
-    // Log actual motor velocity every cycle to monitor speed dips
-    // Get velocity in rotations per second from the TalonFX
-    double velocity = shooterMotor.getVelocity().getValueAsDouble();
-    double wheelRPM = velocity*60;
-    // motorVelocityLog.append(velocity);
-    this.velocity = velocity;
-    this.wheelRPM = wheelRPM;
-
+    // motorCommandLog.append(0.0);
+    commanded = 0;
   }
 
-  @Override
-  public void simulationPeriodic() {
-    // Code here would run each cycle while simulating the robot.
+  public double CalculateSpeed(double distance){ // saying its meters 
+    double x = distance;
+    return 2.9382 * x*x -7.1015 * x + 51.427;
   }
+
+  public double currentSpeed;
+  
+    @Override
+    public void periodic() {
+      // Code here would run every robot cycle when this subsystem is alive.
+      currentSpeed = shooterMotor.get();
+  
+      // Log actual motor velocity every cycle to monitor speed dips
+      // Get velocity in rotations per second from the TalonFX
+      double velocity = shooterMotor.getVelocity().getValueAsDouble();
+      double wheelRPM = velocity*60;
+      // motorVelocityLog.append(velocity);
+      this.velocity = velocity;
+      this.wheelRPM = wheelRPM;
+  
+    }
+  
+    @Override
+    public void simulationPeriodic() {
+      // Code here would run each cycle while simulating the robot.
+    }
 
   @Logged(name = "Shooter Volts")
   public double getVolts() {
@@ -126,4 +145,15 @@ public double currentSpeed;
   public double getCurrent() {
     return shooterMotor.getStatorCurrent().getValueAsDouble();
   }
+
+   @Logged(name = "Actual Speed")
+  public double getVelocity() {
+    return shooterMotor.getVelocity().getValueAsDouble();
+  }
+
+   @Logged(name = "Target Speed")
+  public double getTarget() {
+    return TargetSpeed;
+  }
+
 }
